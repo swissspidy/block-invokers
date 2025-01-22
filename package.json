@@ -1,0 +1,64 @@
+{
+	"name": "block-invokers",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Invoker commands API experiments",
+	"author": "",
+	"license": "Apache-2.0",
+	"keywords": [
+		"wordpress",
+		"invoker commands"
+	],
+	"homepage": "https://github.com/swissspidy/block-invokers",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/swissspidy/block-invokers.git"
+	},
+	"bugs": {
+		"url": "https://github.com/swissspidy/block-invokers/issues"
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		]
+	},
+	"devDependencies": {
+		"@testing-library/jest-dom": "^6.6.3",
+		"@testing-library/react": "^16.2.0",
+		"@types/jest": "^29.5.14",
+		"@types/node": "^22.10.7",
+		"@types/wordpress__blocks": "^12.5.17",
+		"@wordpress/dependency-extraction-webpack-plugin": "^6.16.0",
+		"@wordpress/eslint-plugin": "^22.2.0",
+		"@wordpress/scripts": "^30.9.0",
+		"copy-webpack-plugin": "^12.0.2",
+		"eslint": "^8.57.0",
+		"eslint-plugin-oxlint": "^0.15.7",
+		"eslint-plugin-react": "^7.37.4",
+		"oxlint": "^0.15.7",
+		"patch-package": "^8.0.0",
+		"prettier": "npm:wp-prettier@^3.0.3",
+		"typescript": "^5.7.3",
+		"webpack": "^5.97.1",
+		"webpack-cli": "^6.0.1"
+	},
+	"overrides": {
+		"@wordpress/components": "^28.13.0"
+	},
+	"scripts": {
+		"postinstall": "patch-package",
+		"build": "wp-scripts build",
+		"build:package-types": "tsc --build",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "oxlint --quiet -c=.oxlintrc.json --tsconfig=tsconfig.json --ignore-pattern=@types --jest-plugin --promise-plugin --react-perf-plugin --import-plugin --jsdoc-plugin && wp-scripts lint-js",
+		"lint:js:fix": "oxlint --quiet -c=.oxlintrc.json --tsconfig=tsconfig.json --ignore-pattern=@types --jest-plugin --promise-plugin --react-perf-plugin --import-plugin --jsdoc-plugin --fix && wp-scripts lint-js --fix",
+		"lint:md:docs": "wp-scripts lint-md-docs",
+		"lint:md:js": "wp-scripts lint-md-js",
+		"lint:pkg-json": "wp-scripts lint-pkg-json",
+		"start": "wp-scripts start"
+	}
+}

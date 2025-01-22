@@ -1,0 +1,49 @@
+{
+	"name": "@block-invokers/editor",
+	"version": "0.0.1",
+	"description": "Main WordPress post editor integration",
+	"private": true,
+	"author": "",
+	"license": "Apache-2.0",
+	"keywords": [
+		"wordpress",
+		"gutenberg",
+		"media",
+		"editor",
+		"post"
+	],
+	"homepage": "https://github.com/swissspidy/block-invokers/tree/HEAD/packages/editor/README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/swissspidy/block-invokers.git",
+		"directory": "packages/editor"
+	},
+	"bugs": {
+		"url": "https://github.com/swissspidy/block-invokers/issues"
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"main": "dist/index.js",
+	"source": "src/index.ts",
+	"exports": {
+		".": {
+			"default": "./src/index.ts"
+		}
+	},
+	"types": "dist-types/index.d.ts",
+	"dependencies": {
+		"@wordpress/block-editor": "^14.11.0",
+		"@wordpress/blocks": "^14.2.0",
+		"@wordpress/commands": "^1.13.0",
+		"@wordpress/components": "^28.13.0",
+		"@wordpress/data": "^10.16.0",
+		"@wordpress/dom": "^4.13.0",
+		"@wordpress/editor": "^14.16.0",
+		"@wordpress/element": "^6.16.0",
+		"@wordpress/i18n": "^5.13.0",
+		"@wordpress/icons": "^10.13.0",
+		"@wordpress/plugins": "^7.13.0",
+	  	"uuid": "^11.0.5"
+	}
+}
