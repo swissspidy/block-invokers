@@ -79,7 +79,11 @@ export function ButtonControls( { attributes, setAttributes } ) {
 					value={ controlledBlock?.clientId || '' }
 					onChange={ ( value ) => {
 						if ( '' === value ) {
-							setAttributes( { commandFor: '' } );
+							setAttributes( {
+								commandFor: '',
+								command: '',
+								tagName: 'a',
+							} );
 							return;
 						}
 
@@ -122,7 +126,10 @@ export function ButtonControls( { attributes, setAttributes } ) {
 						] }
 						value={ attributes.command || '' }
 						onChange={ ( value ) =>
-							setAttributes( { command: value } )
+							setAttributes( {
+								command: value,
+								tagName: 'button',
+							} )
 						}
 						help={ __(
 							'Select the command to perform on the block.',

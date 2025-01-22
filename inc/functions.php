@@ -64,6 +64,22 @@ function add_commands_to_block_metadata( $metadata ) {
 				'type' => 'string',
 			];
 			break;
+
+		case 'core/image':
+			$metadata['supports']['commands']    = [
+				'--show-lightbox' => [
+					'label'       => __( 'Show Lightbox', 'block-invokers' ),
+					'description' => __( 'If the lightbox is not visible, show the lightbox', 'block-invokers' ),
+				],
+				'--hide-lightbox' => [
+					'label'       => __( 'Hide Lighbox', 'block-invokers' ),
+					'description' => __( 'If the lightbox is visible, hide the lightbox.', 'block-invokers' ),
+				],
+			];
+			$metadata['attributes']['commandId'] = [
+				'type' => 'string',
+			];
+			break;
 	}
 
 	return $metadata;
@@ -89,12 +105,20 @@ function add_command_attributes( $block_content, $block ) {
 				}
 
 				break;
+
+			case 'core/image':
+				if ( $processor->next_tag( 'img' ) ) {
+					$processor->set_attribute( 'id', $block['attrs']['commandId'] );
+					$processor->set_attribute( 'data-wp-on--command', 'actions.handleCommand' );
+				}
+
+				break;
 		}
 
 		return $processor->get_updated_html();
 	}
 
-	if ( 'core/button' === $block['blockName'] ) {
+	if ( 'core/button' === $block['blockName'] && isset( $block['attrs']['commandFor'], $block['attrs']['command'] ) && '' !== $block['attrs']['commandFor'] && '' !== $block['attrs']['command'] ) {
 		$processor = new WP_HTML_Tag_Processor( $block_content );
 
 		if ( $processor->next_tag( 'button' ) ) {
@@ -143,3 +167,19 @@ function enqueue_block_editor_assets(): void {
 }
 
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\enqueue_block_editor_assets' );
+
+/**
+ * Registers assets for the frontend.
+ */
+function register_frontend_assets() {
+	wp_deregister_script_module( '@wordpress/block-library/image/view' );
+
+	wp_register_script_module(
+		'@wordpress/block-library/image/view',
+		plugins_url( 'script-modules/image-view.js', __DIR__ ),
+		array( '@wordpress/interactivity' ),
+		filemtime( dirname( __DIR__ ) . '/script-modules/image-view.js' )
+	);
+}
+
+add_action( 'init', __NAMESPACE__ . '\register_frontend_assets', PHP_INT_MAX );

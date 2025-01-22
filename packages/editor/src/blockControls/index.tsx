@@ -24,19 +24,3 @@ addFilter(
 	'block-invokers/add-invoker-controls',
 	addInvokerControls
 );
-
-// TODO: Do this server-side instead.
-function forceButtonTagName( blockAttributes, blockType ) {
-	if ( 'core/button' === blockType.name ) {
-		if ( blockAttributes.commandFor && blockAttributes.command ) {
-			blockAttributes.tagName = 'button';
-		}
-	}
-	return blockAttributes;
-}
-
-addFilter(
-	'blocks.getBlockAttributes',
-	'block-invokers/force-button-tagname',
-	forceButtonTagName
-);
