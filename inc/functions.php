@@ -65,6 +65,30 @@ function add_commands_to_block_metadata( $metadata ) {
 			];
 			break;
 
+		case 'core/audio':
+			$metadata['supports']['commands']    = [
+				'play-pause'   => [
+					'label'       => __( 'Play/Pause', 'block-invokers' ),
+					'description' => __( 'If the audio is not playing, plays the audio. Otherwise pauses it.', 'block-invokers' ),
+				],
+				'play'         => [
+					'label'       => __( 'Play', 'block-invokers' ),
+					'description' => __( 'If the audio is playing, pause the audio.', 'block-invokers' ),
+				],
+				'pause'        => [
+					'label'       => __( 'Pause', 'block-invokers' ),
+					'description' => __( 'If the audio is not playing, play the audio.', 'block-invokers' ),
+				],
+				'toggle-muted' => [
+					'label'       => __( 'Toggle Muted', 'block-invokers' ),
+					'description' => __( 'If the audio is muted, it unmutes the audio, otherwise it mutes it.', 'block-invokers' ),
+				],
+			];
+			$metadata['attributes']['commandId'] = [
+				'type' => 'string',
+			];
+			break;
+
 		case 'core/image':
 			$metadata['supports']['commands']    = [
 				'--show-lightbox' => [
@@ -72,7 +96,7 @@ function add_commands_to_block_metadata( $metadata ) {
 					'description' => __( 'If the lightbox is not visible, show the lightbox', 'block-invokers' ),
 				],
 				'--hide-lightbox' => [
-					'label'       => __( 'Hide Lighbox', 'block-invokers' ),
+					'label'       => __( 'Hide Lightbox', 'block-invokers' ),
 					'description' => __( 'If the lightbox is visible, hide the lightbox.', 'block-invokers' ),
 				],
 			];
@@ -94,6 +118,13 @@ function add_command_attributes( $block_content, $block ) {
 		switch ( $block['blockName'] ) {
 			case 'core/video':
 				if ( $processor->next_tag( 'video' ) ) {
+					$processor->set_attribute( 'id', $block['attrs']['commandId'] );
+				}
+
+				break;
+
+			case 'core/audio':
+				if ( $processor->next_tag( 'audio' ) ) {
 					$processor->set_attribute( 'id', $block['attrs']['commandId'] );
 				}
 

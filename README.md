@@ -6,6 +6,16 @@
 
 Experimenting with the [Invoker Commands API](https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API).
 
+## Demo
+
+This allows the button block to control other blocks on your site:
+
+![Commands Panel](https://github.com/user-attachments/assets/8ab90fcf-b1a4-4d29-a307-d056081c8c03)
+
+https://github.com/user-attachments/assets/74f83e35-18e1-4bfb-bd4c-0764de539860
+
+## Try it
+
 Try it now in your browser:
 
 [![Test on WordPress Playground](https://img.shields.io/badge/Test%20on%20WordPress%20Playground-3F57E1?style=for-the-badge&logo=WordPress&logoColor=ffffff)](https://playground.wordpress.net/?mode=seamless&blueprint-url=https://raw.githubusercontent.com/swissspidy/block-invokers/main/blueprints/playground.json)
