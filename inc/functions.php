@@ -11,7 +11,13 @@ namespace BlockInvokers;
 
 use WP_HTML_Tag_Processor;
 
-function add_commands_to_block_metadata( $metadata ) {
+/**
+ * Filters block metadata to add command information.
+ *
+ * @param array $metadata Block metadata.
+ * @return array Filtered block metadata.
+ */
+function add_commands_to_block_metadata( array $metadata ): array {
 	switch ( $metadata['name'] ) {
 		case 'core/button':
 			$metadata['attributes']['command']    = [
@@ -111,6 +117,13 @@ function add_commands_to_block_metadata( $metadata ) {
 
 add_filter( 'block_type_metadata', __NAMESPACE__ . '\add_commands_to_block_metadata' );
 
+/**
+ * Filters rendered block markup to add necessary attributes for invokers.
+ *
+ * @param string $block_content Rendered block markup.
+ * @param array  $block Block metadata.
+ * @return string Filtered block markup.
+ */
 function add_command_attributes( $block_content, $block ) {
 	if ( isset( $block['attrs']['commandId'] ) && '' !== $block['attrs']['commandId'] ) {
 
