@@ -33,7 +33,7 @@
 		"pretty": true,
 		"sourceMap": true,
 		"typeRoots": [ "./@types", "./node_modules/@types" ],
-		"types": [ "jest", "node", "dom-chromium-ai" ]
+		"types": [ "jest", "node" ]
 	},
 	"exclude": [ "packages/*/dist-types/**", "packages/*/dist/**" ]
 }

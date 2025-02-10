@@ -11,14 +11,24 @@ import { PanelBody, SelectControl } from '@wordpress/components';
 import { link } from '@wordpress/icons';
 import { useSelect, useDispatch } from '@wordpress/data';
 
+import type { BlockWithCommand } from './types';
+
 // @ts-ignore
 export function ButtonControls( { attributes, setAttributes } ) {
 	const { updateBlockAttributes, __unstableMarkNextChangeAsNotPersistent } =
 		useDispatch( blockEditorStore );
-	const blockTypesWithCommands = useSelect( ( select ) => {
+	const blockTypesWithCommands: Record<
+		string,
+		Record< string, { label: string; description: string } >
+	> = useSelect( ( select ) => {
 		return Object.fromEntries(
-			select( blocksStore )
-				.getBlockTypes()
+			// eslint-disable-next-line prettier/prettier
+			(
+				// @ts-ignore
+				select( blocksStore ).getBlockTypes() as Array<
+					BlockWithCommand< any >
+				>
+			 )
 				.filter(
 					( { supports } ) =>
 						supports?.commands &&
@@ -39,6 +49,7 @@ export function ButtonControls( { attributes, setAttributes } ) {
 
 			return allClientIds
 				.map( ( clientId ) => getBlock( clientId ) )
+				.filter( ( block ) => block !== null )
 				.filter( ( { name } ) =>
 					Object.hasOwn( blockTypesWithCommands, name )
 				)
@@ -72,7 +83,9 @@ export function ButtonControls( { attributes, setAttributes } ) {
 							value: '',
 						},
 						...blocksWithCommands.map( ( { clientId } ) => ( {
-							label: <BlockTitle clientId={ clientId } />,
+							label: (
+								<BlockTitle clientId={ clientId } />
+							 ) as unknown as string,
 							value: clientId,
 						} ) ),
 					] }
@@ -97,7 +110,7 @@ export function ButtonControls( { attributes, setAttributes } ) {
 						if ( ! commandId ) {
 							// This side effect should not create an undo level.
 							void __unstableMarkNextChangeAsNotPersistent();
-							updateBlockAttributes( value, {
+							void updateBlockAttributes( value, {
 								commandId: commandFor,
 							} );
 						}
