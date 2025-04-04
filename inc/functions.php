@@ -168,6 +168,8 @@ function add_command_attributes( $block_content, $block ) {
 		if ( $processor->next_tag( 'button' ) ) {
 			$processor->set_attribute( 'commandfor', $block['attrs']['commandFor'] );
 			$processor->set_attribute( 'command', $block['attrs']['command'] );
+
+			wp_enqueue_script( 'block-invokers-polyfill' );
 		}
 
 		return $processor->get_updated_html();
@@ -223,6 +225,22 @@ function register_frontend_assets() {
 		plugins_url( 'script-modules/image-view.js', __DIR__ ),
 		array( '@wordpress/interactivity' ),
 		filemtime( dirname( __DIR__ ) . '/script-modules/image-view.js' )
+	);
+
+	$asset_file = dirname( __DIR__ ) . '/build/polyfill.asset.php';
+	$asset      = is_readable( $asset_file ) ? require $asset_file : [];
+
+	$asset['dependencies'] = $asset['dependencies'] ?? [];
+	$asset['version']      = $asset['version'] ?? '';
+
+	wp_register_script(
+		'block-invokers-polyfill',
+		plugins_url( 'build/polyfill.js', __DIR__ ),
+		$asset['dependencies'],
+		$asset['version'],
+		array(
+			'strategy' => 'async',
+		)
 	);
 }
 

@@ -5,6 +5,7 @@ module.exports = {
 	...defaultConfig,
 	entry: {
 		editor: resolve( __dirname, 'packages/editor/src/index.tsx' ),
+		polyfill: require.resolve( 'invokers-polyfill' ),
 	},
 	output: {
 		filename: '[name].js',
