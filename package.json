@@ -38,7 +38,7 @@
 		"eslint": "^8.57.0",
 		"eslint-plugin-oxlint": "^1.9.0",
 		"eslint-plugin-react": "^7.37.5",
-		"invokers-polyfill": "^0.5.5",
+		"invokers-polyfill": "^0.5.6",
 		"oxlint": "^1.9.0",
 		"patch-package": "^8.0.0",
 		"prettier": "npm:wp-prettier@^3.0.3",
