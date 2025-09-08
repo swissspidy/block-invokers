@@ -29,7 +29,7 @@
 		"@testing-library/jest-dom": "^6.8.0",
 		"@testing-library/react": "^16.3.0",
 		"@types/jest": "^30.0.0",
-		"@types/node": "^24.3.0",
+		"@types/node": "^24.3.1",
 		"@types/wordpress__blocks": "^12.5.18",
 		"@wordpress/dependency-extraction-webpack-plugin": "^6.30.0",
 		"@wordpress/eslint-plugin": "^22.16.0",
