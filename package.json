@@ -43,7 +43,7 @@
 		"patch-package": "^8.0.1",
 		"prettier": "npm:wp-prettier@^3.0.3",
 		"typescript": "^5.9.3",
-		"webpack": "^5.106.1",
+		"webpack": "^5.106.2",
 		"webpack-cli": "^7.0.2"
 	},
 	"overrides": {
