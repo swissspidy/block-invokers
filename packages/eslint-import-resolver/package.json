@@ -30,6 +30,6 @@
 		}
 	},
 	"dependencies": {
-		"eslint-import-resolver-node": "^0.3.10"
+		"eslint-import-resolver-node": "^0.4.0"
 	}
 }
