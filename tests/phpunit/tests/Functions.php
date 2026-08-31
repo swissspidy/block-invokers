@@ -20,7 +20,22 @@ use function BlockInvokers\register_frontend_assets;
  */
 class Test_Functions extends WP_UnitTestCase {
 	/**
-	 * Resets script registration state between tests.
+	 * Starts each test with a clean scripts state and the plugin's
+	 * scripts registered, since enqueueing an unregistered handle is
+	 * silently ignored.
+	 *
+	 * @return void
+	 */
+	public function set_up(): void {
+		parent::set_up();
+
+		unset( $GLOBALS['wp_scripts'], $GLOBALS['wp_script_modules'] );
+
+		register_frontend_assets();
+	}
+
+	/**
+	 * Resets script registration state after each test.
 	 *
 	 * @return void
 	 */

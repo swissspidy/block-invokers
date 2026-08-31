@@ -35,7 +35,7 @@ test.describe( 'Invoker commands', () => {
 
 		// Wire the button up to the details block via the Commands panel.
 		await editor.canvas
-			.getByRole( 'document', { name: 'Block: Button' } )
+			.getByRole( 'document', { name: 'Block: Button', exact: true } )
 			.click();
 		await editor.openDocumentSettingsSidebar();
 
@@ -49,10 +49,10 @@ test.describe( 'Invoker commands', () => {
 		// is the first option after "None". Selecting by index rather than by
 		// label since the label is the block title, which can vary.
 		await page
-			.getByRole( 'combobox', { name: 'Block' } )
+			.getByRole( 'combobox', { name: 'Block', exact: true } )
 			.selectOption( { index: 1 } );
 		await page
-			.getByRole( 'combobox', { name: 'Command' } )
+			.getByRole( 'combobox', { name: 'Command', exact: true } )
 			.selectOption( '--toggle' );
 
 		// The button now holds the command attributes.
@@ -69,7 +69,10 @@ test.describe( 'Invoker commands', () => {
 
 		// The rendered markup wires the button to the details element.
 		const details = page.locator( 'details.wp-block-details' );
-		const button = page.getByRole( 'button', { name: 'Toggle' } );
+		const button = page.getByRole( 'button', {
+			name: 'Toggle',
+			exact: true,
+		} );
 		await expect( button ).toHaveAttribute( 'command', '--toggle' );
 		await expect( button ).toHaveAttribute(
 			'commandfor',
@@ -102,15 +105,15 @@ test.describe( 'Invoker commands', () => {
 		} );
 
 		await editor.canvas
-			.getByRole( 'document', { name: 'Block: Button' } )
+			.getByRole( 'document', { name: 'Block: Button', exact: true } )
 			.click();
 		await editor.openDocumentSettingsSidebar();
 
 		await expect(
-			page.getByRole( 'combobox', { name: 'Block' } )
+			page.getByRole( 'combobox', { name: 'Block', exact: true } )
 		).toBeVisible();
 		await expect(
-			page.getByRole( 'combobox', { name: 'Command' } )
+			page.getByRole( 'combobox', { name: 'Command', exact: true } )
 		).toBeHidden();
 	} );
 } );
