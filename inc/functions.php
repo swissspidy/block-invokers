@@ -28,16 +28,22 @@ function add_commands_to_block_metadata( array $metadata ): array {
 			];
 			break;
 		case 'core/details':
+			/*
+			 * The `toggle`, `open`, and `close` commands for `<details>` are still
+			 * an Open UI proposal, so custom (`--`-prefixed) commands are used
+			 * until they are part of the HTML spec and supported by browsers.
+			 * See https://open-ui.org/components/future-invokers.explainer/.
+			 */
 			$metadata['supports']['commands']    = [
-				'toggle' => [
+				'--toggle' => [
 					'label'       => __( 'Toggle', 'block-invokers' ),
 					'description' => __( 'If the <details> is open, then close it, otherwise open it.', 'block-invokers' ),
 				],
-				'open'   => [
+				'--open'   => [
 					'label'       => __( 'Open', 'block-invokers' ),
 					'description' => __( 'If the <details> is not open, then open it.', 'block-invokers' ),
 				],
-				'close'  => [
+				'--close'  => [
 					'label'       => __( 'Close', 'block-invokers' ),
 					'description' => __( 'If the <details> is open, then close it.', 'block-invokers' ),
 				],
@@ -48,20 +54,26 @@ function add_commands_to_block_metadata( array $metadata ): array {
 			break;
 
 		case 'core/video':
+			/*
+			 * The media commands for `<video>` are still an Open UI proposal,
+			 * so custom (`--`-prefixed) commands are used until they are part
+			 * of the HTML spec and supported by browsers.
+			 * See https://open-ui.org/components/future-invokers.explainer/.
+			 */
 			$metadata['supports']['commands']    = [
-				'play-pause'   => [
+				'--play-pause'   => [
 					'label'       => __( 'Play/Pause', 'block-invokers' ),
 					'description' => __( 'If the video is not playing, plays the video. Otherwise pauses it.', 'block-invokers' ),
 				],
-				'play'         => [
+				'--play'         => [
 					'label'       => __( 'Play', 'block-invokers' ),
-					'description' => __( 'If the video is playing, pause the video.', 'block-invokers' ),
-				],
-				'pause'        => [
-					'label'       => __( 'Pause', 'block-invokers' ),
 					'description' => __( 'If the video is not playing, play the video.', 'block-invokers' ),
 				],
-				'toggle-muted' => [
+				'--pause'        => [
+					'label'       => __( 'Pause', 'block-invokers' ),
+					'description' => __( 'If the video is playing, pause the video.', 'block-invokers' ),
+				],
+				'--toggle-muted' => [
 					'label'       => __( 'Toggle Muted', 'block-invokers' ),
 					'description' => __( 'If the video is muted, it unmutes the video, otherwise it mutes it.', 'block-invokers' ),
 				],
@@ -72,20 +84,26 @@ function add_commands_to_block_metadata( array $metadata ): array {
 			break;
 
 		case 'core/audio':
+			/*
+			 * The media commands for `<audio>` are still an Open UI proposal,
+			 * so custom (`--`-prefixed) commands are used until they are part
+			 * of the HTML spec and supported by browsers.
+			 * See https://open-ui.org/components/future-invokers.explainer/.
+			 */
 			$metadata['supports']['commands']    = [
-				'play-pause'   => [
+				'--play-pause'   => [
 					'label'       => __( 'Play/Pause', 'block-invokers' ),
 					'description' => __( 'If the audio is not playing, plays the audio. Otherwise pauses it.', 'block-invokers' ),
 				],
-				'play'         => [
+				'--play'         => [
 					'label'       => __( 'Play', 'block-invokers' ),
-					'description' => __( 'If the audio is playing, pause the audio.', 'block-invokers' ),
-				],
-				'pause'        => [
-					'label'       => __( 'Pause', 'block-invokers' ),
 					'description' => __( 'If the audio is not playing, play the audio.', 'block-invokers' ),
 				],
-				'toggle-muted' => [
+				'--pause'        => [
+					'label'       => __( 'Pause', 'block-invokers' ),
+					'description' => __( 'If the audio is playing, pause the audio.', 'block-invokers' ),
+				],
+				'--toggle-muted' => [
 					'label'       => __( 'Toggle Muted', 'block-invokers' ),
 					'description' => __( 'If the audio is muted, it unmutes the audio, otherwise it mutes it.', 'block-invokers' ),
 				],
@@ -132,6 +150,8 @@ function add_command_attributes( $block_content, $block ) {
 			case 'core/video':
 				if ( $processor->next_tag( 'video' ) ) {
 					$processor->set_attribute( 'id', $block['attrs']['commandId'] );
+
+					wp_enqueue_script( 'block-invokers-view' );
 				}
 
 				break;
@@ -139,6 +159,8 @@ function add_command_attributes( $block_content, $block ) {
 			case 'core/audio':
 				if ( $processor->next_tag( 'audio' ) ) {
 					$processor->set_attribute( 'id', $block['attrs']['commandId'] );
+
+					wp_enqueue_script( 'block-invokers-view' );
 				}
 
 				break;
@@ -146,6 +168,8 @@ function add_command_attributes( $block_content, $block ) {
 			case 'core/details':
 				if ( $processor->next_tag( 'details' ) ) {
 					$processor->set_attribute( 'id', $block['attrs']['commandId'] );
+
+					wp_enqueue_script( 'block-invokers-view' );
 				}
 
 				break;
@@ -240,6 +264,28 @@ function register_frontend_assets() {
 		$asset['version'],
 		array(
 			'strategy' => 'async',
+		)
+	);
+
+	$view_asset_file = dirname( __DIR__ ) . '/build/view.asset.php';
+	$view_asset      = is_readable( $view_asset_file ) ? require $view_asset_file : [];
+
+	$view_asset['dependencies'] = $view_asset['dependencies'] ?? [];
+	$view_asset['version']      = $view_asset['version'] ?? '';
+
+	/*
+	 * Implements the custom commands for `<details>`, `<video>`, and `<audio>`
+	 * elements by listening to `command` events, which are dispatched either
+	 * natively (custom commands are part of the Invoker Commands API) or by
+	 * the polyfill in browsers without support.
+	 */
+	wp_register_script(
+		'block-invokers-view',
+		plugins_url( 'build/view.js', __DIR__ ),
+		$view_asset['dependencies'],
+		$view_asset['version'],
+		array(
+			'strategy' => 'defer',
 		)
 	);
 }

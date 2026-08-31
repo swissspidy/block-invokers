@@ -15,6 +15,20 @@
 	"settings": {
 		"import/resolver": "@block-invokers/eslint-import-resolver"
 	},
+	"overrides": [
+		{
+			"files": [ "src/**/*.js" ],
+			"env": { "browser": true }
+		},
+		{
+			"files": [ "**/test/**/*.[jt]s", "**/test/**/*.[jt]sx" ],
+			"extends": [ "plugin:@wordpress/eslint-plugin/test-unit" ]
+		},
+		{
+			"files": [ "tests/e2e/**/*.ts" ],
+			"extends": [ "plugin:@wordpress/eslint-plugin/test-playwright" ]
+		}
+	],
 	"rules": {
 		"@wordpress/no-unused-vars-before-return": [
 			"error",

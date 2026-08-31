@@ -6,6 +6,7 @@ module.exports = {
 	entry: {
 		editor: resolve( __dirname, 'packages/editor/src/index.tsx' ),
 		polyfill: require.resolve( 'invokers-polyfill' ),
+		view: resolve( __dirname, 'src/view.js' ),
 	},
 	output: {
 		filename: '[name].js',

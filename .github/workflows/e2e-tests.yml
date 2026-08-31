@@ -1,0 +1,60 @@
+name: E2E Tests
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+# Cancels all previous workflow runs for the same branch that have not yet completed.
+concurrency:
+    # The concurrency group contains the workflow name and the branch name.
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+    e2e-tests:
+        name: E2E Tests (WordPress ${{ matrix.wordpress }})
+        runs-on: ubuntu-latest
+
+        strategy:
+            fail-fast: false
+            matrix:
+                wordpress: ['latest']
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+
+            - name: Setup Node
+              uses: actions/setup-node@v7
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Install Playwright browsers
+              run: npx playwright install --with-deps chromium
+
+            - name: Build plugin
+              run: npm run build
+
+            - name: Start WordPress
+              run: npm run wp-env start
+              env:
+                  WP_ENV_CORE: ${{ matrix.wordpress == 'latest' && 'WordPress/WordPress' || format('https://wordpress.org/wordpress-{0}.zip', matrix.wordpress) }}
+
+            - name: Run tests
+              run: npm run test:e2e
+
+            - name: Archive debug artifacts (screenshots, HTML snapshots)
+              uses: actions/upload-artifact@v7
+              if: always()
+              with:
+                  name: failures-artifacts-${{ matrix.wordpress }}
+                  path: artifacts/test-results
+                  if-no-files-found: ignore
