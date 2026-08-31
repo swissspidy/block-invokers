@@ -70,3 +70,101 @@ jobs:
 
             - name: Lint PHP
               run: composer lint
+
+    unit-js:
+        name: JS Unit Tests
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+
+            - name: Setup Node
+              uses: actions/setup-node@v7
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run tests
+              run: npm run test:unit -- --coverage
+
+            - name: Upload code coverage report
+              uses: codecov/codecov-action@v7.0.0
+              if: ${{ always() && hashFiles('coverage/lcov.info') != '' }}
+              with:
+                  files: coverage/lcov.info
+                  flags: js
+                  token: ${{ secrets.CODECOV_TOKEN }}
+
+    unit-php:
+        name: PHP Unit Tests (PHP ${{ matrix.php }}, WordPress ${{ matrix.wordpress }})
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - php: '8.0'
+                      wordpress: 'latest'
+                      coverage: false
+                    - php: '8.3'
+                      wordpress: 'latest'
+                      coverage: true
+                    - php: '8.4'
+                      wordpress: 'latest'
+                      coverage: false
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+
+            - name: Setup Node
+              uses: actions/setup-node@v7
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: npm
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  coverage: none
+                  tools: composer
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Install PHP dependencies
+              uses: ramsey/composer-install@65e4f84970763564f46a70b8a54b90d033b3bdda
+              with:
+                  composer-options: '--prefer-dist --no-scripts'
+
+            # PHPUnit runs inside the tests-cli container, not on the runner —
+            # `matrix.php` only affects the host, so the container needs its
+            # own PHP version pinned.
+            - name: Start WordPress
+              run: ./node_modules/.bin/wp-env start ${{ matrix.coverage && '--xdebug=coverage' || '' }}
+              env:
+                  WP_ENV_CORE: ${{ matrix.wordpress == 'latest' && 'WordPress/WordPress' || format('https://wordpress.org/wordpress-{0}.zip', matrix.wordpress) }}
+                  WP_ENV_PHP_VERSION: ${{ matrix.php }}
+
+            - name: Create coverage output directory
+              if: ${{ matrix.coverage }}
+              run: mkdir -p artifacts
+
+            # Run wp-env directly: `npm run` swallows `--env-cwd` as an npm
+            # config flag, so the plugin directory would never reach wp-env.
+            - name: Run tests
+              run: >-
+                  ./node_modules/.bin/wp-env run tests-cli
+                  --env-cwd=wp-content/plugins/block-invokers
+                  vendor/bin/phpunit
+                  ${{ matrix.coverage && '--coverage-clover artifacts/coverage.xml' || '' }}
+
+            - name: Upload code coverage report
+              uses: codecov/codecov-action@v7.0.0
+              if: ${{ always() && matrix.coverage && hashFiles('artifacts/coverage.xml') != '' }}
+              with:
+                  files: artifacts/coverage.xml
+                  flags: php
+                  token: ${{ secrets.CODECOV_TOKEN }}
