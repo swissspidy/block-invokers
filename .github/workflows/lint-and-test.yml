@@ -91,7 +91,7 @@ jobs:
               run: npm run test:unit -- --coverage
 
             - name: Upload code coverage report
-              uses: codecov/codecov-action@v7.0.0
+              uses: codecov/codecov-action@v7.1.1
               if: ${{ always() && hashFiles('coverage/lcov.info') != '' }}
               with:
                   files: coverage/lcov.info
@@ -162,7 +162,7 @@ jobs:
                   ${{ matrix.coverage && '--coverage-clover artifacts/coverage.xml' || '' }}
 
             - name: Upload code coverage report
-              uses: codecov/codecov-action@v7.0.0
+              uses: codecov/codecov-action@v7.1.1
               if: ${{ always() && matrix.coverage && hashFiles('artifacts/coverage.xml') != '' }}
               with:
                   files: artifacts/coverage.xml
